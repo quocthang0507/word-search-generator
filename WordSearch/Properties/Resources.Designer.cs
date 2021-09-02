@@ -19,7 +19,7 @@ namespace WordSearch.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,8 +63,7 @@ namespace WordSearch.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;DataWords xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
-        ///	&lt;Animals&gt;chicken frog cat dog goat moose lion dolphin lemur antelope&quot; &lt;/Animals&gt;
-        ///&lt;/DataWords&gt;.
+        ///	&lt;Mammals&gt;Aardvark Elephant Hare Lion Baboon Camel Beaver Whale Tiger Bear Rhinoceros Bobcat Dolphin Ferret Caribou Cheetah Chimpanzee Chipmunk Leopard Bat Rabbit Cougar Coyote Dingo Cat Dog Kangaroo Moose Fox Seal Panda Giraffe Groundhog Porpoise Hedgehog Hippopotamus Horse Monkey Jaguar Koala Llama Lynx Manatee Meerkat Mongoose Goat Gorilla Lemur Narwhal  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DataWords {
             get {

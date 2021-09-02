@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch", "WordSearch\WordSearch.csproj", "{703811F5-AF4C-42A3-A8EA-3A3CE5037B7F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BD67C2D8-E739-496C-8341-4C6D3CAF4438}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchLib", "WordSearchLib\WordSearchLib.csproj", "{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +17,10 @@ Global
 		{703811F5-AF4C-42A3-A8EA-3A3CE5037B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{703811F5-AF4C-42A3-A8EA-3A3CE5037B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{703811F5-AF4C-42A3-A8EA-3A3CE5037B7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
