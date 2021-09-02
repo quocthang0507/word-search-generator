@@ -17,13 +17,11 @@ namespace WordSearchLib.Common
 		public static string[] GetWordsFromFile(string filename, int size, LangCharsets lang)
 		{
 			string[] wordList = ReadWordList(filename);
-			if (wordList == null || size > wordList.Length)
+			if (wordList == null || size > wordList.Length || size < 0)
 				return null;
-			string[] wordsSelected = GetRandomWords(wordList, size);
-			string[] words = Helper.CapitalizeAll(wordsSelected);
-			if (lang == LangCharsets.Vi)
-				return words.Select(word => Helper.RemoveDiacriticsInVietnameseString(word)).ToArray();
-			return words;
+			wordList = size == 0 ? GetRandomWords(wordList, wordList.Length) : GetRandomWords(wordList, size);
+			wordList = Helper.CapitalizeAll(wordList);
+			return lang == LangCharsets.Vi ? wordList.Select(word => Helper.RemoveDiacriticsInVietnameseString(word)).ToArray() : wordList;
 		}
 
 		/// <summary>

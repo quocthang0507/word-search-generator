@@ -8,8 +8,6 @@ namespace WordSearchLib
 {
 	public class WordSearch
 	{
-		private const char NULL = '\0';
-
 		/// <summary>
 		/// The word list is used for current game
 		/// </summary>
@@ -27,7 +25,9 @@ namespace WordSearchLib
 		/// </summary>
 		public LangCharsets LangCharset { get; private set; }
 
-		public WordSearch(string filename, int size, LangCharsets charset)
+		private const char NULL = '\0';
+
+		public WordSearch(string filename, int size = 0, LangCharsets charset = LangCharsets.En)
 		{
 			Words = DataHandler.GetWordsFromFile(filename, size, charset);
 			if (Words == null)
