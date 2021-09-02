@@ -1,48 +1,93 @@
 ﻿using System;
-using WordSearch.Common;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using WordSearchLib.Common;
 
 namespace WordSearchLib
 {
 	public class WordSearch
 	{
+		private const char NULL = '\0';
+
 		/// <summary>
 		/// The word list is used for current game
 		/// </summary>
 		public string[] Words { get; private set; }
+		/// <summary>
+		/// The grid for finding words
+		/// </summary>
 		public char[,] Grid { get; private set; }
-		public Lang LangCharset { get; private set; }
+		/// <summary>
+		/// The grid with only answers
+		/// </summary>
+		public List<char[,]> GridAnswers { get; private set; }
+		/// <summary>
+		/// Vietnamese or English charset
+		/// </summary>
+		public LangCharsets LangCharset { get; private set; }
 
-		public WordSearch(string filename, int size, Lang lang)
+		public WordSearch(string filename, int size, LangCharsets charset)
 		{
-			Words = DataHandler.GetWordsFromFile(filename, size);
+			Words = DataHandler.GetWordsFromFile(filename, size, charset);
 			if (Words == null)
 				throw new Exception();
-			LangCharset = lang;
+			LangCharset = charset;
+			ProcessingWordGrids();
+		}
+
+		public void ExportToFile(string filename, bool answers = false)
+		{
+			StringBuilder builder = new();
+			builder.AppendLine("WORD SEARCH PUZZLE\n");
+			builder.AppendLine("Word List:");
+			foreach (var word in Words)
+			{
+				builder.Append(word + '\t');
+			}
+			builder.AppendLine("\n\nYour puzzle:\n");
+			builder.AppendLine(GetAsString(Grid));
+			if (answers)
+			{
+				builder.AppendLine("\nAnswers:\n");
+				foreach (var ans in GridAnswers)
+				{
+					builder.AppendLine(GetAsString(ans) + "\n");
+				}
+			}
+			ExportString(filename, builder.ToString());
 		}
 
 		/// <summary>
 		/// Handle setup Grid size, populate
 		/// </summary>
-		public void HandleSetupGrid()
+		private void ProcessingWordGrids()
 		{
-			InitializeEmptyGrid();
+			InitializeEmptyGrids();
 			PlaceWordsIntoGrid(Words);
-			PopulateEmptyElements(LangCharset);
+			PlaceRandomChars(LangCharset);
 		}
 
 		/// <summary>
 		/// Initialize an empty Grid
 		/// </summary>
-		private void InitializeEmptyGrid()
+		private void InitializeEmptyGrids()
 		{
-			int numChars = Helper.CountElements(Words);
+			// Initialize variables
+			int numChars = Helper.CountAllCharacters(Words);
 			int longestWordLen = Helper.GetLongestWord(Words).Length;
 			int numRows = GetGridSize(numChars, longestWordLen);
+
+			// Initialize grids
 			Grid = new char[numRows, numRows];
+			GridAnswers = new List<char[,]>();
+			for (int i = 0; i < numChars; i++)
+			{
+				GridAnswers.Add(new char[numRows, numRows]);
+			}
 		}
 
-		private int GetGridSize(int numChars, int longestWordLen)
+		private static int GetGridSize(int numChars, int longestWordLen)
 		{
 			int minGridArea = longestWordLen * longestWordLen;
 
@@ -66,28 +111,26 @@ namespace WordSearchLib
 		/// Place all words into Grid
 		/// </summary>
 		/// <param name="words"></param>
-		/// <param name="Grid"></param>
 		private void PlaceWordsIntoGrid(string[] words)
 		{
-			int numberWordsToPlace = Helper.CountElements(words);
-
 			// iterate Words to place
-			for (int wordCurrent = 0; wordCurrent < numberWordsToPlace; wordCurrent++)
+			for (int word_idx = 0; word_idx < Words.Length; word_idx++)
 			{
 				bool wordPlaced = false;
 				while (!wordPlaced)
 				{
 					// Get random starting point for word
-					GridCell coord = new(Helper.Random(0, Grid.GetLength(0) - 1), Helper.Random(0, Grid.GetLength(1) - 1));
-					if (PlaceWordIntoGrid(coord, words[wordCurrent]))
+					GridCell pos = new(Helper.Random(0, Grid.GetLength(0) - 1), Helper.Random(0, Grid.GetLength(1) - 1));
+					if (PlaceWordIntoGrid(Grid, pos, words[word_idx]))
 					{
 						wordPlaced = true;
+						PlaceWordIntoGrid(GridAnswers[word_idx], pos, words[word_idx]);
 					}
 				}
 			}
 		}
 
-		private bool PlaceWordIntoGrid(GridCell position, string word)
+		private bool PlaceWordIntoGrid(char[,] gridAnswer, GridCell position, string word)
 		{
 			int x = position.RowIndex;
 			int y = position.ColIndex;
@@ -100,7 +143,7 @@ namespace WordSearchLib
 			for (int counter = 0; counter < word.Length; counter++)
 			{
 				// If point empty or point contains same letter word's current character
-				if (Grid[x, y] == '\0' | Grid[x, y] == word[0])
+				if (Grid[x, y] == NULL | Grid[x, y] == word[0])
 				{
 					if (SpaceRight(word, position))
 					{
@@ -153,28 +196,36 @@ namespace WordSearchLib
 						switch (placementOption)
 						{
 							case 1:
-								PlaceWordRight(word, position);
+								PlaceWordRight(Grid, word, position);
+								PlaceWordRight(gridAnswer, word, position);
 								break;
 							case 2:
-								PlaceWordLeft(word, position);
+								PlaceWordLeft(Grid, word, position);
+								PlaceWordLeft(gridAnswer, word, position);
 								break;
 							case 3:
-								PlaceWordDown(word, position);
+								PlaceWordDown(Grid, word, position);
+								PlaceWordDown(gridAnswer, word, position);
 								break;
 							case 4:
-								PlaceWordUp(word, position);
+								PlaceWordUp(Grid, word, position);
+								PlaceWordUp(gridAnswer, word, position);
 								break;
 							case 5:
-								PlaceWordUpRight(word, position);
+								PlaceWordUpRight(Grid, word, position);
+								PlaceWordUpRight(gridAnswer, word, position);
 								break;
 							case 6:
-								PlaceWordDownRight(word, position);
+								PlaceWordDownRight(Grid, word, position);
+								PlaceWordDownRight(gridAnswer, word, position);
 								break;
 							case 7:
-								PlaceWordUpLeft(word, position);
+								PlaceWordUpLeft(Grid, word, position);
+								PlaceWordUpLeft(gridAnswer, word, position);
 								break;
 							case 8:
-								PlaceWordDownLeft(word, position);
+								PlaceWordDownLeft(Grid, word, position);
+								PlaceWordDownLeft(gridAnswer, word, position);
 								break;
 						}
 						return true;
@@ -187,19 +238,53 @@ namespace WordSearchLib
 		/// <summary>
 		/// Place random characters into empty Grid cell
 		/// </summary>
-		/// <param name="Grid"></param>
-		private void PopulateEmptyElements(Lang lang)
+		private void PlaceRandomChars(LangCharsets lang)
 		{
 			for (int i = 0; i < Grid.GetLength(0); i++)
 			{
 				for (int j = 0; j < Grid.GetLength(1); j++)
 				{
-					if (Grid[i, j] == '\0')
+					if (Grid[i, j] == NULL)
 					{
-						Grid[i, j] = Helper.Random(lang, 'a', '\0');
+						Grid[i, j] = Helper.Random(lang, 'a', NULL);
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Export a string to a file and can append if this file is existed
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="grid"></param>
+		private void ExportString(string filename, string text)
+		{
+			StreamWriter writer = new(filename, true);
+			writer.Write(text);
+			writer.Close();
+		}
+
+		/// <summary>
+		/// Export a grid to a file and can append if this file is existed
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="grid"></param>
+		private static string GetAsString(char[,] grid)
+		{
+			StringBuilder builder = new();
+			for (int i = 0; i < grid.GetLength(0); i++)
+			{
+				for (int j = 0; j < grid.GetLength(1); j++)
+				{
+					if (grid[i, j] == NULL)
+						builder.Append('_');
+					else
+						builder.Append(grid[i, j]);
+					builder.Append('\t');
+				}
+				builder.AppendLine();
+			}
+			return builder.ToString();
 		}
 
 		#region Check words fit in Grid
@@ -218,7 +303,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex, pos.ColIndex + counter] != '\0' && Grid[pos.RowIndex, pos.ColIndex + counter] != word[counter])
+					if (Grid[pos.RowIndex, pos.ColIndex + counter] != NULL && Grid[pos.RowIndex, pos.ColIndex + counter] != word[counter])
 					{
 						return false;
 					}
@@ -242,7 +327,7 @@ namespace WordSearchLib
 				// iterate left in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex, pos.ColIndex - counter] != '\0' && Grid[pos.RowIndex, pos.ColIndex - counter] != word[counter])
+					if (Grid[pos.RowIndex, pos.ColIndex - counter] != NULL && Grid[pos.RowIndex, pos.ColIndex - counter] != word[counter])
 					{
 						return false;
 					}
@@ -266,7 +351,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex + counter, pos.ColIndex] != '\0' && Grid[pos.RowIndex + counter, pos.ColIndex] != word[counter])
+					if (Grid[pos.RowIndex + counter, pos.ColIndex] != NULL && Grid[pos.RowIndex + counter, pos.ColIndex] != word[counter])
 					{
 						return false;
 					}
@@ -290,7 +375,7 @@ namespace WordSearchLib
 				// iterate left in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex - counter, pos.ColIndex] != '\0' && Grid[pos.RowIndex - counter, pos.ColIndex] != word[counter])
+					if (Grid[pos.RowIndex - counter, pos.ColIndex] != NULL && Grid[pos.RowIndex - counter, pos.ColIndex] != word[counter])
 					{
 						return false;
 					}
@@ -315,7 +400,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex - counter, pos.ColIndex + counter] != '\0' && Grid[pos.RowIndex - counter, pos.ColIndex + counter] != word[counter])
+					if (Grid[pos.RowIndex - counter, pos.ColIndex + counter] != NULL && Grid[pos.RowIndex - counter, pos.ColIndex + counter] != word[counter])
 					{
 						return false;
 					}
@@ -340,7 +425,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex + counter, pos.ColIndex + counter] != '\0' && Grid[pos.RowIndex + counter, pos.ColIndex + counter] != word[counter])
+					if (Grid[pos.RowIndex + counter, pos.ColIndex + counter] != NULL && Grid[pos.RowIndex + counter, pos.ColIndex + counter] != word[counter])
 					{
 						return false;
 					}
@@ -365,7 +450,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex - counter, pos.ColIndex - counter] != '\0' && Grid[pos.RowIndex - counter, pos.ColIndex - counter] != word[counter])
+					if (Grid[pos.RowIndex - counter, pos.ColIndex - counter] != NULL && Grid[pos.RowIndex - counter, pos.ColIndex - counter] != word[counter])
 					{
 						return false;
 					}
@@ -390,7 +475,7 @@ namespace WordSearchLib
 				// iterate right in row, checking each successive element empty or same as current char
 				for (int counter = 0; counter < word.Length; counter++)
 				{
-					if (Grid[pos.RowIndex + counter, pos.ColIndex - counter] != '\0' && Grid[pos.RowIndex + counter, pos.ColIndex - counter] != word[counter])
+					if (Grid[pos.RowIndex + counter, pos.ColIndex - counter] != NULL && Grid[pos.RowIndex + counter, pos.ColIndex - counter] != word[counter])
 					{
 						return false;
 					}
@@ -407,14 +492,14 @@ namespace WordSearchLib
 		/// <summary>
 		/// Place word left -> right
 		/// </summary>
+		/// <param name="Grid"></param>
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
-		/// <param name="Grid"></param>
-		private void PlaceWordRight(string word, GridCell pos)
+		private static void PlaceWordRight(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex, pos.ColIndex + counter] = word[counter];
+				grid[pos.RowIndex, pos.ColIndex + counter] = word[counter];
 			}
 		}
 
@@ -424,11 +509,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordLeft(string word, GridCell pos)
+		private static void PlaceWordLeft(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex, pos.ColIndex - counter] = word[counter];
+				grid[pos.RowIndex, pos.ColIndex - counter] = word[counter];
 			}
 		}
 
@@ -438,11 +523,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordDown(string word, GridCell pos)
+		private static void PlaceWordDown(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex + counter, pos.ColIndex] = word[counter];
+				grid[pos.RowIndex + counter, pos.ColIndex] = word[counter];
 			}
 		}
 
@@ -452,11 +537,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordUp(string word, GridCell pos)
+		private static void PlaceWordUp(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex - counter, pos.ColIndex] = word[counter];
+				grid[pos.RowIndex - counter, pos.ColIndex] = word[counter];
 			}
 		}
 
@@ -466,11 +551,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordUpRight(string word, GridCell pos)
+		private static void PlaceWordUpRight(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex - counter, pos.ColIndex + counter] = word[counter];
+				grid[pos.RowIndex - counter, pos.ColIndex + counter] = word[counter];
 			}
 		}
 
@@ -480,11 +565,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordDownRight(string word, GridCell pos)
+		private static void PlaceWordDownRight(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex + counter, pos.ColIndex + counter] = word[counter];
+				grid[pos.RowIndex + counter, pos.ColIndex + counter] = word[counter];
 			}
 		}
 
@@ -494,11 +579,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordUpLeft(string word, GridCell pos)
+		private static void PlaceWordUpLeft(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex - counter, pos.ColIndex - counter] = word[counter];
+				grid[pos.RowIndex - counter, pos.ColIndex - counter] = word[counter];
 			}
 		}
 
@@ -508,11 +593,11 @@ namespace WordSearchLib
 		/// <param name="word"></param>
 		/// <param name="pos"></param>
 		/// <param name="Grid"></param>
-		private void PlaceWordDownLeft(string word, GridCell pos)
+		private static void PlaceWordDownLeft(char[,] grid, string word, GridCell pos)
 		{
 			for (int counter = 0; counter < word.Length; counter++)
 			{
-				Grid[pos.RowIndex + counter, pos.ColIndex - counter] = word[counter];
+				grid[pos.RowIndex + counter, pos.ColIndex - counter] = word[counter];
 			}
 		}
 		#endregion

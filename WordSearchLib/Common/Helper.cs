@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace WordSearch.Common
+namespace WordSearchLib.Common
 {
-	public enum Lang
+	public enum LangCharsets
 	{
 		Vi,
 		En
@@ -38,11 +38,11 @@ namespace WordSearch.Common
 		/// </summary>
 		/// <param name="words"></param>
 		/// <returns></returns>
-		public static string[] CapitaliseAll(string[] words) => words.Select(word => word.ToUpper()).ToArray();
+		public static string[] CapitalizeAll(string[] words) => words.Select(word => word.ToUpper()).ToArray();
 
 		public static int CountDigits(int number) => number.ToString().Length;
 
-		public static int CoountAllCharacters(string[] words)
+		public static int CountAllCharacters(string[] words)
 		{
 			int count = 0;
 			foreach (string word in words)
@@ -52,23 +52,21 @@ namespace WordSearch.Common
 			return count;
 		}
 
-		public static int CountElements(string[] words) => words.Length;
-
 		public static string GetLongestWord(string[] words) => words.OrderByDescending(s => s.Length).First();
 
 		public static int Random(int start, int end) => random.Next(start, end + 1);
 
-		public static char Random(Lang lang, char start, char end)
+		public static char Random(LangCharsets lang, char start, char end)
 		{
 			int start_idx, end_idx;
 			switch (lang)
 			{
-				case Lang.Vi:
+				case LangCharsets.Vi:
 					start_idx = VI.IndexOf(char.ToUpper(start));
 					end_idx = VI.IndexOf(end == '\0' ? 'Y' : end);
 					break;
 				default:
-				case Lang.En:
+				case LangCharsets.En:
 					start_idx = ENG.IndexOf(char.ToUpper(start));
 					end_idx = ENG.IndexOf(end == '\0' ? 'Z' : end);
 					break;
@@ -84,7 +82,7 @@ namespace WordSearch.Common
 
 			string charSet = lang switch
 			{
-				Lang.Vi => VI.Substring(start_idx, length),
+				LangCharsets.Vi => VI.Substring(start_idx, length),
 				_ => ENG.Substring(start_idx, length),
 			};
 			char randomChar = charSet[Random(0, charSet.Length - 1)];

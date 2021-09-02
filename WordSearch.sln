@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch", "WordSearch\WordSearch.csproj", "{703811F5-AF4C-42A3-A8EA-3A3CE5037B7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearchLib", "WordSearchLib\WordSearchLib.csproj", "{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordSearchLib", "WordSearchLib\WordSearchLib.csproj", "{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch_Console", "WordSearch_Console\WordSearch_Console.csproj", "{718034B3-E76F-45F4-8703-08FB744B83D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E5F6C0-A3B8-4E31-B122-63347D06D0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{718034B3-E76F-45F4-8703-08FB744B83D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{718034B3-E76F-45F4-8703-08FB744B83D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{718034B3-E76F-45F4-8703-08FB744B83D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{718034B3-E76F-45F4-8703-08FB744B83D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
