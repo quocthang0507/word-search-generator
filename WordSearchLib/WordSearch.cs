@@ -81,7 +81,7 @@ namespace WordSearchLib
 			// Initialize grids
 			Grid = new char[numRows, numRows];
 			GridAnswers = new List<char[,]>();
-			for (int i = 0; i < numChars; i++)
+			for (int i = 0; i < Words.Length; i++)
 			{
 				GridAnswers.Add(new char[numRows, numRows]);
 			}

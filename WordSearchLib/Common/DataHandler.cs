@@ -33,9 +33,9 @@ namespace WordSearchLib.Common
 		{
 			if (File.Exists(filename))
 			{
-				char[] delimiters = new char[] { ',', ' ', ';', '\t', '\n', '\r' };
+				char[] delimiters = new char[] { ',', ';', '\t', '\n', '\r' };
 				string[] words = File.ReadAllText(filename).Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-				return words;
+				return words.Select(word => word.Replace(" ", "")).ToArray();
 			}
 			return null;
 		}

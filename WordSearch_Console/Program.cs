@@ -12,6 +12,7 @@ namespace WordSearch_Console
 		{
 			Console.OutputEncoding = Encoding.UTF8;
 			string[] arguments = Environment.GetCommandLineArgs();
+			// string[] arguments = { "-i", "50fruits.txt", "-o", "puzzle.txt", "-s", "10", "-a" };
 			if (arguments.Length == 1 || arguments[1].Equals("-H", StringComparison.OrdinalIgnoreCase))
 			{
 				Console.WriteLine("Vui lòng thêm các đối số vào sau chương trình này.");
@@ -53,10 +54,12 @@ namespace WordSearch_Console
 					{
 						answer = false;
 					}
-					WordSearch puzzle = new(outputArg, size, charset);
+					WordSearch puzzle = new(inputArg, size, charset);
 					puzzle.ExportToFile(outputArg, answer);
 				}
+				Console.WriteLine("Không tìm thấy tập tin -i này");
 			}
+			Console.WriteLine("Đã tạo xong, mời xem tập tin!");
 			return 0;
 		}
 
