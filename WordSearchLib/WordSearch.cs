@@ -253,13 +253,13 @@ namespace WordSearchLib
 		}
 
 		/// <summary>
-		/// Export a string to a file and can append if this file is existed
+		/// Export a string to a file
 		/// </summary>
 		/// <param name="filename"></param>
 		/// <param name="grid"></param>
 		private void ExportString(string filename, string text)
 		{
-			StreamWriter writer = new(filename, true);
+			StreamWriter writer = new(filename);
 			writer.Write(text);
 			writer.Close();
 		}

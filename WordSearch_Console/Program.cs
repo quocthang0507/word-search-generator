@@ -57,7 +57,8 @@ namespace WordSearch_Console
 					WordSearch puzzle = new(inputArg, size, charset);
 					puzzle.ExportToFile(outputArg, answer);
 				}
-				Console.WriteLine("Không tìm thấy tập tin -i này");
+				else
+					Console.WriteLine("Không tìm thấy tập tin -i này");
 			}
 			Console.WriteLine("Đã tạo xong, mời xem tập tin!");
 			return 0;
