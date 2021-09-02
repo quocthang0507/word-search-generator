@@ -57,12 +57,11 @@ namespace WordSearch.Common
 		}
 		private static string[] SetSizeList(string[] arrayWords, int sizeList)
 		{
-			bool wordAdded = false;
 			List<string> listWords = new List<string>();
 
 			for (int counter = 0; counter < sizeList; counter++)
 			{
-				wordAdded = false;
+				bool wordAdded = false;
 				while (!wordAdded)
 				{
 					// Select word from random integer

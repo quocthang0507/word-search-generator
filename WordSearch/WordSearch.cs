@@ -67,7 +67,7 @@ namespace WordSearch
 		private void HandleSetupEmptyGrid()
 		{
 			// Declare, initialise with null () values, grids
-			int numCharsInWords = Helper.CountWordsCharactersAll(Words);
+			int numCharsInWords = Helper.CountAllCharacters(Words);
 			int lengthLongestWord = Helper.LongestWord(Words).Length;
 			int numGridRowsCols = SetGridSize(numCharsInWords, lengthLongestWord);
 			SetupEmptyGrid(numGridRowsCols);
@@ -107,13 +107,12 @@ namespace WordSearch
         *=======================================*/
 		private void PopulateGridWords(string[] words, char[,] grid)
 		{
-			bool wordPlaced = false;
 			int numberWordsToPlace = Helper.CountElements(words);
 
 			// iterate Words to place
 			for (int wordCurrent = 0; wordCurrent < numberWordsToPlace; wordCurrent++)
 			{
-				wordPlaced = false;
+				bool wordPlaced = false;
 				while (!wordPlaced)
 				{
 					// Get random starting point for word

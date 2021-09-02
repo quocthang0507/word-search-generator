@@ -46,7 +46,7 @@ namespace WordSearch.Common
 
 			return numCharsInInt;
 		}
-		public static int CountWordsCharactersAll(string[] array)
+		public static int CountAllCharacters(string[] array)
 		{
 			int count = 0;
 			foreach (string word in array)
@@ -58,6 +58,7 @@ namespace WordSearch.Common
 			}
 			return count;
 		}
+
 		public static int CountElements(string[] array)
 		{
 			int count = 0;
@@ -68,9 +69,9 @@ namespace WordSearch.Common
 			return count;
 		}
 
-		/*==========================*
-        *  3. Return longest word   *
-        *===========================*/
+		/*=========================================*
+		 * Return longest STRING in STRING array1D  
+		 *=========================================*/
 		public static string LongestWord(string[] array)
 		{
 			string longestWord = "";
